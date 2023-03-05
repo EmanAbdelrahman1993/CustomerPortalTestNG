@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Suite1]">
+  <test thread-count="5" name="FirstTest(failed)">
+    <classes>
+      <class name="pages.MainTestClass">
+        <methods>
+          <include name="changeLanguageToArabic"/>
+          <include name="rechargeMeterWithBlankFields"/>
+          <include name="sendComplaint"/>
+          <include name="fAQPage"/>
+          <include name="forgetPasswordBySMSWithInvalidData"/>
+          <include name="sendInquiry"/>
+          <include name="cancelRechargeMeter"/>
+          <include name="profilePage"/>
+          <include name="showReceipt"/>
+          <include name="quitDriver"/>
+          <include name="logoutUser"/>
+          <include name="OpenBrowser"/>
+          <include name="changeLanguageToEnglish"/>
+          <include name="invalidloginData"/>
+          <include name="rechargeMeterWithInvalidData"/>
+          <include name="forgetPasswordByEmailWithInvalidData"/>
+          <include name="rechargeElectricButton"/>
+          <include name="notifications"/>
+          <include name="guidePage"/>
+          <include name="loggedUserRequest"/>
+          <include name="rechargeMeterWithValidData"/>
+          <include name="validloginData"/>
+        </methods>
+      </class> <!-- pages.MainTestClass -->
+    </classes>
+  </test> <!-- FirstTest(failed) -->
+</suite> <!-- Failed suite [Suite1] -->
