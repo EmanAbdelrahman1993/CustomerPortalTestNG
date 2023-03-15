@@ -1,8 +1,10 @@
 package pages;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -53,7 +55,7 @@ public class MainTestClass {
         Thread.sleep(3000);
         //Assertion softAssert = new SoftAssert();
         Assert.assertTrue(actualUrl.equals(expectedUrl),"Invalid Login Data");
-        Hooks.logoutButton();
+        //Hooks.logoutButton();
         Thread.sleep(2000);
     }
 
@@ -94,17 +96,18 @@ public class MainTestClass {
 
     @Test(priority = 101)
     public static void changeLanguageToEnglish() throws InterruptedException {
-        String getCurrentLang = driver.findElement(By.xpath("//*[@id=\"__BVID__14__BV_toggle_\"]/span")).getText();
+        String getCurrentLang;
+        getCurrentLang = driver.findElement(By.xpath("//*[@id=\"__BVID__14__BV_toggle_\"]/span")).getText();
         //System.out.println(getCurrentLang);
         driver.findElement(By.xpath("//*[@id=\"__BVID__14__BV_toggle_\"]/span")).click();
         if (getCurrentLang.equals("ع")) {
             driver.findElement(By.linkText("EN")).click();
             //System.out.println(test);
             Thread.sleep(2000);
+        } else
+            //System.out.println();
+            Assert.assertEquals(getCurrentLang.equals("EN"),"English Language is already activated!");
 
-        } else {
-            driver.quit();
-        }
     }
     //Forget the password
     //Forget Password By SMS
@@ -188,7 +191,7 @@ public class MainTestClass {
     }
 
     //Recharge Meter:
-    @Test(priority = 97)
+
     public boolean rechargeButtonEnable()
     {
         RechargeButtonEnabled = Hooks.driver.findElement(By.xpath("//*[@id=\"app\"]/div/div[3]/div/div[2]/form/div[2]/button"));
@@ -234,7 +237,7 @@ public class MainTestClass {
              */
         }
         else
-            quitDriver();
+            System.out.println("Please Enter a valid data");
     }
 
     @Test(priority = 95)
@@ -255,8 +258,10 @@ public class MainTestClass {
             Hooks.payButton();
             Thread.sleep(2000);
         }
-        else
-            quitDriver();
+        else{
+            Assert.assertTrue(rechargeButtonEnable(),"Please Enter a valid data");
+        }
+
     }
 
     @Test(priority = 88)
@@ -277,7 +282,7 @@ public class MainTestClass {
 
         }
         else
-            quitDriver();
+            Assert.assertTrue(rechargeButtonEnable(),"Please Enter a valid data");
     }
     @Test(priority = 93)
     public void cancelRechargeMeter() throws InterruptedException {
@@ -297,12 +302,12 @@ public class MainTestClass {
 
         }
         else
-            driver.quit();
+            Assert.assertTrue(rechargeButtonEnable(),"Please Enter a valid data");
     }
 
 
     //Home Page:
-    //@Test
+    @Test(priority = 200)
     public static void downloadConsumption() throws InterruptedException {
         validloginData();
         Thread.sleep(3000);
@@ -323,7 +328,10 @@ public class MainTestClass {
     {
         validloginData();
         Thread.sleep(3000);
-        Hooks.showReceipt();
+
+       // driver.findElement(By.xpath("//*[@id=\"app\"]/div[2]/div[2]/div/div/div[2]/div/div/table/tr[2]/td[4]/a")).click();
+
+        Hooks.showReceiptButton();
         Thread.sleep(3000);
         Hooks.downloadReciept();
         Thread.sleep(3000);
@@ -398,6 +406,7 @@ public class MainTestClass {
         driver.findElement(By.id("form-input-password")).sendKeys(newPassword);
         driver.findElement(By.id("form-input-repassword")).sendKeys(confirmedPassword);
         driver.findElement(By.id("update-personal-info-btn")).click();
+        Thread.sleep(3000);
         String feedback = driver.findElement(By.id("password-live-feedback")).getText();
         String expectedText = "Your Password changed correctly!";
         Assert.assertTrue(feedback.contains(expectedText),"Please Enter a valid password");
@@ -413,12 +422,10 @@ public class MainTestClass {
         driver.findElement(By.linkText("Notification Settings")).click();
         Thread.sleep(2000);
         updateNotification(0 , "100", "8855224", "test@test");
-        Thread.sleep(2000);
-        /*updateNotification(0 , "", "8855224", "test@test");
-        Thread.sleep(2000);
+        Thread.sleep(3000);
+        updateNotification(0 , "", "8855224", "test@test");
+        Thread.sleep(3000);
         updateNotification(0 , "120", "8855224", "test@test");
-        Hooks.logoutButton();
-         */
         Thread.sleep(3000);
     }
 
@@ -427,11 +434,8 @@ public class MainTestClass {
         Select drpCountry = new Select(driver.findElement(By.id("meter-code")));
 
         drpCountry.selectByIndex(meterIndex);
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         driver.findElement(By.id("critical-amount")).clear();
-        //Thread.sleep(3000);
-
-        Thread.sleep(3000);
         driver.findElement(By.id("critical-amount")).sendKeys(amount);
         driver.findElement(By.id("mobile-input")).clear();
         driver.findElement(By.id("mobile-input")).sendKeys(mobile);
@@ -439,8 +443,9 @@ public class MainTestClass {
         driver.findElement(By.id("email-input")).sendKeys(email);
         //Thread.sleep(3000);
 
-        WebElement update= new WebDriverWait(driver , Duration.ofSeconds(20)).until(ExpectedConditions.elementToBeClickable(By.id("update-notify-btn")));
-        update.click();
+        WebElement element = driver.findElement(By.id("update-notify-btn"));
+        JavascriptExecutor executor = (JavascriptExecutor)driver;
+        executor.executeScript("arguments[0].click();", element);
 
     }
 
@@ -560,8 +565,11 @@ public class MainTestClass {
     public static void OpenBrowser() {
         // 1- Bridge
         WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
+
         // 2- create object from chrome browser
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         //3- Configurations
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

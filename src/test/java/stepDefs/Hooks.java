@@ -1,6 +1,7 @@
 package stepDefs;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -102,13 +103,10 @@ public class Hooks {
         Hooks.driver.findElement(By.linkText("201009000163")).click();
     }
 
-    public static void showReceipt() throws InterruptedException {
-        //Hooks.driver.findElement(By.xpath("//*[@id=\"app\"]/div[2]/div[2]/div/div/div[2]/div/div/table/tr[2]/td[4]/a")).click();
-        WebElement firstResult = new WebDriverWait(driver, Duration.ofSeconds(20))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app\"]/div[2]/div[2]/div/div/div[2]/div/div/table/tr[2]/td[4]/a")));
-        //System.out.println(firstResult);
-        firstResult.click();
-        //Hooks.driver.findElement(By.xpath("//*[@id=\"app\"]/div[2]/div[2]/div/div/div[2]/div/div/table/tr[2]/td[4]/a")).click();
+    public static void showReceiptButton() throws InterruptedException {
+        WebElement element = driver.findElement(By.xpath("//*[@id=\"app\"]/div[2]/div[2]/div/div/div[2]/div/div/table/tr[2]/td[4]/a"));
+        JavascriptExecutor executor = (JavascriptExecutor)driver;
+        executor.executeScript("arguments[0].click();", element);
     }
 
     public static void downloadReciept() throws InterruptedException {
